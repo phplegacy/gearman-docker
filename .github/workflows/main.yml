@@ -68,8 +68,8 @@ jobs:
             BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_INFO=${{ env.BUILD_INFO }}
           tags: |
-            beeyev/gearman:${{ matrix.version }}
-            beeyev/gearman:latest
+            legacyphp/gearman:${{ matrix.version }}
+            legacyphp/gearman:latest
           pull: true
           push: true
 
@@ -89,5 +89,5 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository: beeyev/gearman
+          repository: legacyphp/gearman
           #short-description: ${{ github.event.repository.description }}
