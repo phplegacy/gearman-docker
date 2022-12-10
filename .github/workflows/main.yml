@@ -60,8 +60,8 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           platforms: linux/amd64
-          cache-from: type=gha, scope=${{ github.workflow }}-${{ matrix.version }}
-          cache-to: type=gha, scope=${{ github.workflow }}-${{ matrix.version }}, mode=max
+          cache-from: type=gha, scope=${{ github.workflow }}-${{ matrix.gearman_version }}
+          cache-to: type=gha, scope=${{ github.workflow }}-${{ matrix.gearman_version }}, mode=max
           context: .
           file: ./docker/Dockerfile
           build-args: |
@@ -69,9 +69,9 @@ jobs:
             BUILD_FINGERPRINT=${{ env.BUILD_FINGERPRINT }}
             GEARMAN_VERSION=${{ matrix.gearman_version }}
           tags: |
-            legacyphp/gearman:${{ matrix.version }}
+            legacyphp/gearman:${{ matrix.gearman_version }}
             legacyphp/gearman:latest
-            ghcr.io/phplegacy/gearman-docker:${{ matrix.version }}
+            ghcr.io/phplegacy/gearman-docker:${{ matrix.gearman_version }}
             ghcr.io/phplegacy/gearman-docker:latest
           pull: true
           push: true
