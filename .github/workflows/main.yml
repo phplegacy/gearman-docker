@@ -92,5 +92,5 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository: beeyev/gearman
+          repository: legacyphp/gearman
           #short-description: ${{ github.event.repository.description }}
