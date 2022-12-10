@@ -1,7 +1,8 @@
 # docker build -t gearman-docker --build-arg BUILDKIT_INLINE_CACHE=1 -f ./docker/Dockerfile . && docker run --rm -it gearman-docker
 FROM alpine:3.17
 
-ENV GEARMAND_VERSION 1.1.20
+ARG GEARMAN_VERSION
+ENV GEARMAN_VERSION=$GEARMAN_VERSION
 
 ENV TERM="xterm-256color" \
 LANGUAGE="en_US.UTF-8" \
@@ -32,7 +33,7 @@ RUN set -eux \
         hiredis-dev \
         mariadb-dev \
         libmemcached-dev \
-    && curl -fsSL https://github.com/gearman/gearmand/releases/download/${GEARMAND_VERSION}/gearmand-${GEARMAND_VERSION}.tar.gz --output /tmp/gearmand.tar.gz \
+    && curl -fsSL https://github.com/gearman/gearmand/releases/download/${GEARMAN_VERSION}/gearmand-${GEARMAN_VERSION}.tar.gz --output /tmp/gearmand.tar.gz \
     && mkdir -p /tmp/gearmand/ \
     && tar -xzf /tmp/gearmand.tar.gz -C /tmp/gearmand/ --strip-components=1 \
     && cd /tmp/gearmand/ \
@@ -75,8 +76,23 @@ RUN addgroup -g $APP_GID user && adduser -D -G user -u $APP_UID user && chown us
 # environment
 ENV HOME /home/user
 
+LABEL org.opencontainers.image.title="Gearman Docker image" \
+    org.opencontainers.image.description="Gearman Docker image" \
+    org.opencontainers.image.authors="https://github.com/beeyev" \
+    org.opencontainers.image.documentation="https://github.com/phplegacy/gearman-docker" \
+    org.opencontainers.image.url="https://github.com/phplegacy/gearman-docker" \
+    org.opencontainers.image.source="https://github.com/phplegacy/gearman-docker"
+
 ARG TZ='UTC'
 ENV TZ=$TZ
+
+#These params meant to be set by CI
+ARG BUILD_DATE
+ENV BUILD_DATE=$BUILD_DATE
+RUN echo $BUILD_DATE
+ARG BUILD_FINGERPRINT
+ENV BUILD_FINGERPRINT=$BUILD_FINGERPRINT
+RUN echo $BUILD_FINGERPRINT
 
 HEALTHCHECK --start-period=60s CMD gearadmin --status || exit 1
 

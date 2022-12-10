@@ -108,7 +108,10 @@ function generate_config() {
 	fi
 }
 
-echo -e "\n${GRN}---> ⚙⚙⚙️ Starting Gearman container...${NC}"
+printf "\n${GRN}--->${NC} 	🚀️️	 Welcome to ${GRN}phplegacy Gearman v.${GEARMAN_VERSION}${NC} container..."
+printf "\n${GRN}--->${NC} Docker image build date: ${GRN}${BUILD_DATE}${NC}, fingerprint: ${GRN}${BUILD_FINGERPRINT}${NC}"
+printf "\n${GRN}--->${NC} Subscribe to project updates: ${GRN}https://github.com/phplegacy/gearman-docker${NC}\n\n"
+
 gearmand --version
 echo -e "\n"
 

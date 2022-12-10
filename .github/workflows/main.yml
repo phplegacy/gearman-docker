@@ -23,14 +23,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [ '1.1.20' ]
+        gearman_version: [ '1.1.20' ]
 
     steps:
       -
         name: Prepare env variables
         run: |
           echo "BUILD_DATE=$(TZ=':UTC' date +'%Y-%m-%d %H:%M:%S (%Z)')" >> ${GITHUB_ENV}
-          echo "BUILD_INFO=${GITHUB_SHA::7}" >> ${GITHUB_ENV}
+          echo "BUILD_FINGERPRINT=${GITHUB_SHA::7}" >> ${GITHUB_ENV}
 
       -
         name: Check out code
@@ -66,10 +66,13 @@ jobs:
           file: ./docker/Dockerfile
           build-args: |
             BUILD_DATE=${{ env.BUILD_DATE }}
-            BUILD_INFO=${{ env.BUILD_INFO }}
+            BUILD_FINGERPRINT=${{ env.BUILD_FINGERPRINT }}
+            GEARMAN_VERSION=${{ matrix.gearman_version }}
           tags: |
-            beeyev/gearman:${{ matrix.version }}
-            beeyev/gearman:latest
+            legacyphp/gearman:${{ matrix.version }}
+            legacyphp/gearman:latest
+            ghcr.io/phplegacy/gearman-docker:${{ matrix.version }}
+            ghcr.io/phplegacy/gearman-docker:latest
           pull: true
           push: true
 
