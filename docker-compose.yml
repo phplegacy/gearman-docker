@@ -1,29 +1,27 @@
 version: "3"
 
 services:
-  phpmyadmin:
-    image: beeyev/phpmyadmin-lightweight:latest
-    container_name: 'phpmyadmin'
+  gearman:
+    image: legacyphp/gearman:latest
+    container_name: 'gearman'
     restart: unless-stopped
     tty: true
     environment:
-      - 'TZ=CET'
-      - 'PMA_HOST=mysql'
-      - 'PMA_USER=root'
-      - 'PMA_PASSWORD=TestRootPassword'
-    ports:
-      - '8080:80'
+      - 'TZ=UTC'
+      - 'VERBOSE=DEBUG'
     networks:
       - network1
 
-  mysql:
-    image: bitnami/mysql:8.0
-    container_name: 'mysql'
+  gearman-ui:
+    image: 'legacyphp/gearman-ui:latest'
+    container_name: 'gearman-ui'
     restart: unless-stopped
     tty: true
+    ports:
+      - '8081:80'
     environment:
-      - 'TZ=CET'
-      - 'MYSQL_ROOT_PASSWORD=TestRootPassword'
+      - 'TZ=UTC'
+      - 'GEARMAN_SERVERS=Gearman#1:gearman:4730'
     networks:
       - network1
 

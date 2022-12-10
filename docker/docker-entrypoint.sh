@@ -113,7 +113,7 @@ printf "\n${GRN}--->${NC} Docker image build date: ${GRN}${BUILD_DATE}${NC}, fin
 printf "\n${GRN}--->${NC} Subscribe to project updates: ${GRN}https://github.com/phplegacy/gearman-docker${NC}\n\n"
 
 gearmand --version
-echo -e "\n"
+printf "\n"
 
 # first arg is `-f` or `--some-option`
 if [ "${1#-}" != "$1" ]; then
