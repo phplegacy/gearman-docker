@@ -1,4 +1,4 @@
-# Gearman
+# Gearman docker
 
 <p align="center"><a href="https://github.com/phplegacy/gearman-docker"><img src="https://github.com/phplegacy/gearman-docker/raw/master/docs/gearman.png"></a></p>
 
