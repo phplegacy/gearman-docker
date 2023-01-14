@@ -16,8 +16,12 @@ on:
 jobs:
 
   build:
-    name: Build, test and publish
+    name: Build and publish
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        gearman_version: [ '1.1.20' ]
+        gearman_version_minor: [ '1.1' ]
 
     steps:
       - name: Prepare env variables
@@ -48,17 +52,21 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           platforms: linux/amd64
-          cache-from: type=gha, scope=${{ github.workflow }}
-          cache-to: type=gha, scope=${{ github.workflow }}, mode=max
+          cache-from: type=gha, scope=${{ github.workflow }}-${{ matrix.gearman_version }}
+          cache-to: type=gha, scope=${{ github.workflow }}-${{ matrix.gearman_version }}, mode=max
           context: .
           file: ./docker/Dockerfile
-          target: php-prod
           build-args: |
             BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_FINGERPRINT=${{ env.BUILD_FINGERPRINT }}
+            GEARMAN_VERSION=${{ matrix.gearman_version }}
           tags: |
-            legacyphp/memcachedadmin:latest
-            ghcr.io/phplegacy/memcachedadmin-docker:latest
+            legacyphp/gearman:${{ matrix.gearman_version }}
+            legacyphp/gearman:${{ matrix.gearman_version_minor }}
+            legacyphp/gearman:latest
+            ghcr.io/phplegacy/gearman-docker:${{ matrix.gearman_version }}
+            ghcr.io/phplegacy/gearman-docker:${{ matrix.gearman_version_minor }}
+            ghcr.io/phplegacy/gearman-docker:latest
           pull: true
           push: true
 
@@ -76,5 +84,5 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository: legacyphp/memcachedadmin
+          repository: legacyphp/gearman
           #short-description: ${{ github.event.repository.description }}
