@@ -1,11 +1,9 @@
-name: CI
+name: Build [latest] docker image
 
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
-  pull_request:
     branches: [ master ]
 
   schedule:
@@ -17,61 +15,50 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
 
-  build-gearman:
+  build:
     name: Build, test and publish
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        gearman_version: [ '1.1.20' ]
 
     steps:
-      -
-        name: Prepare env variables
+      - name: Prepare env variables
         run: |
           echo "BUILD_DATE=$(TZ=':UTC' date +'%Y-%m-%d %H:%M:%S (%Z)')" >> ${GITHUB_ENV}
           echo "BUILD_FINGERPRINT=${GITHUB_SHA::7}" >> ${GITHUB_ENV}
 
-      -
-        name: Check out code
+      - name: Check out code
         uses: actions/checkout@v3
 
-      -
-        name: Set up Docker Buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      -
-        name: Login to DockerHub
+      - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      -
-        name: Login to GitHub Container Registry
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GH_TOKEN }}
 
-      -
-        name: Build images and push to registry
+      - name: Build images and push to registry
         uses: docker/build-push-action@v3
         with:
           platforms: linux/amd64
-          cache-from: type=gha, scope=${{ github.workflow }}-${{ matrix.gearman_version }}
-          cache-to: type=gha, scope=${{ github.workflow }}-${{ matrix.gearman_version }}, mode=max
+          cache-from: type=gha, scope=${{ github.workflow }}
+          cache-to: type=gha, scope=${{ github.workflow }}, mode=max
           context: .
           file: ./docker/Dockerfile
+          target: php-prod
           build-args: |
             BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_FINGERPRINT=${{ env.BUILD_FINGERPRINT }}
-            GEARMAN_VERSION=${{ matrix.gearman_version }}
           tags: |
-            legacyphp/gearman:${{ matrix.gearman_version }}
-            legacyphp/gearman:latest
-            ghcr.io/phplegacy/gearman-docker:${{ matrix.gearman_version }}
-            ghcr.io/phplegacy/gearman-docker:latest
+            legacyphp/memcachedadmin:latest
+            ghcr.io/phplegacy/memcachedadmin-docker:latest
           pull: true
           push: true
 
@@ -81,15 +68,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      -
-        name: Check out code
+      - name: Check out code
         uses: actions/checkout@v3
 
-      -
-        name: Update Docker Hub repo description
+      - name: Update Docker Hub repo description
         uses: peter-evans/dockerhub-description@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository: legacyphp/gearman
+          repository: legacyphp/memcachedadmin
           #short-description: ${{ github.event.repository.description }}

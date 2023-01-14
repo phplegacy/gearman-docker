@@ -68,4 +68,4 @@ You can also inject your version of config file to `/etc/gearmand.conf` as neede
 The MIT License (MIT). Please see [License File](https://github.com/phplegacy/gearman-docker/blob/master/LICENSE) for more information.
 
 ---
-If you like this project, please consider giving me a ⭐
+If you like this project, please consider giving it a ⭐
